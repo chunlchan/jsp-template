@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSP-Template Documentation</title>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/lib/themes/buble.css" />
+</head>
+
+<body>
+    <div id="app"></div>
+    <script>
+        //https://docsify.js.org/
+        window.$docsify = {
+            name: 'JSP-Template Docs',
+            repo: 'https://github.com/chunlchan/jsp-template',
+            loadSidebar: true,  // Enable the sidebar
+            search: { //search parameters
+                maxAge: 86400000,
+                paths: 'auto',
+                placeholder: 'Type to search',
+                noData: 'No Results!',
+            }
+        };
+    </script>
+
+    <!-- Include Docsify JS and search plugin-->
+    <script src="https://cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
+</body>
+
+</html>
