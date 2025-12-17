@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Flanker Demo</title>
+    <script src="https://unpkg.com/jspsych@8.2.2"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2.0.0"></script>
+    <link href="https://unpkg.com/jspsych@8.2.2/css/jspsych.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body></body>
+  <script>
+  	const jsPsych = initJsPsych();
+  	
+  	const welcome_trial = {
+  		type: jsPsychHtmlKeyboardResponse,
+  		stimulus: "Welcome. Press the spacebar to get started",
+  		choices: [' '],
+  		post_trial_gap: 500
+  	}
+  	 const instructions_trial = {
+  		type: jsPsychHtmlKeyboardResponse,
+  		stimulus: `
+  			<h1>Instructions</h1>
+  			<p>Press F when you see a left middle arrow</p>
+  			<p>Press J when you see a right middle arrow</p>
+  		`,
+  		choices: ['f', 'j'],
+  		post_trial_gap: 500
+  	}
+  	
+  	const fixation_trial = {
+  		type: jsPsychHtmlKeyboardResponse,
+  		stimulus: `
+  			<h1>+</h1>
+  		`,
+  		choices: "NO_KEYS",
+  		trial_duration: 500  	
+  	}
+  	
+  	const end_experiment = {
+  		type: jsPsychHtmlKeyboardResponse,
+  		stimulus: `
+  			<h2>Experiment Complete</h2>
+  		`,
+  		choices: "NO_KEYS",	
+  	}
+  	
+  	const flanker_timeline = {
+  		timeline: [
+  			//fixation
+  			{
+				type: jsPsychHtmlKeyboardResponse,
+				stimulus: `
+					<h1>+</h1>
+				`,
+				choices: "NO_KEYS",
+				trial_duration: 500  	
+			},
+
+			//flanker			
+			{
+				type: jsPsychHtmlKeyboardResponse,
+				stimulus:function(){
+					let html = `
+						<h1>${jsPsych.evaluateTimelineVariable('stimulus')}</h1>
+					`;
+					return html;
+				},
+				choices: ['f', 'j']
+			}
+  		],
+  		timeline_variables: [
+  		  	{stimulus: "< < < < <", type:"congruent_left", correct_response:"f"},
+	  		{stimulus: "> > > > >", type:"congruent_right", correct_response:"j"},
+	  		{stimulus: "< < > < <", type:"incongruent_left", correct_response:"j"},
+  			{stimulus: "> > < > >", type:"incongruent_right", correct_response:"f"}  
+  		],
+  		randomize_order: true, //randomizes order of timeline variables
+  		repetitions: 2 //will cycle through timeline variables twice for a total of 8 trials
+  	}
+  	
+
+  	let master_timeline = [];
+  	master_timeline.push(welcome_trial);
+  	master_timeline.push(instructions_trial);
+  	master_timeline.push(flanker_timeline);
+  	master_timeline.push(end_experiment);
+  	
+  	jsPsych.run(master_timeline);
+  </script>
+</html>

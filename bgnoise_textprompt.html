@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Background Noise Demo</title>
+    <script src="https://unpkg.com/jspsych@8.2.2"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2.0.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey-text@1.1.3"></script>
+	<script src="https://unpkg.com/@jspsych/plugin-audio-keyboard-response@2.1.0"></script>
+	<script src="https://unpkg.com/@jspsych/plugin-preload@2.1.0"></script>
+	<script src="https://unpkg.com/@jspsych/plugin-call-function@1.1.3"></script>	
+    <link href="https://unpkg.com/jspsych@8.2.2/css/jspsych.css" rel="stylesheet" type="text/css" />
+  </head>
+
+  <body></body>
+
+  <script type="module">
+    //***jsPsych**
+  	const jsPsych = initJsPsych();
+  	
+  	//*** background audio (noise) file **
+  	let bgAudioFile = 'audio/white_noise_1.mp3';
+	
+	//preload the noise file
+	const preload = {
+	    type: jsPsychPreload,
+    	audio: [bgAudioFile],
+    	show_progress_bar: true,
+    	show_detailed_errors: true
+	}
+
+	//Function to start background audio
+	let bgAudio;
+	const startBackgroundAudio = {
+	  type: jsPsychCallFunction,
+	  func: () => {
+	  	bgAudio = new Audio(bgAudioFile);
+		bgAudio.loop = true;//loop audio
+	  	bgAudio.volume = 0;
+		bgAudio.play();
+		
+		//simple fade-in function
+		let interval_id = setInterval(()=>{
+			bgAudio.volume += 0.1;
+			if(bgAudio.volume >= 1){//stop fade-in when volume reaches 1
+				clearInterval(interval_id);
+				bgAudio.volume = 1;
+			}
+		}, 50)
+	  }
+	};
+
+	//Function to stop background audio
+	const stopBackgroundAudio = {
+	  type: jsPsychCallFunction,
+	  func: () => {
+		bgAudio.pause();
+		bgAudio.currentTime = 0;
+	  }
+	};
+  	
+  	//list of prompts to appear on screen
+  	const trials = [
+		{textprompt:"Tell us about where you grew up?"},
+		{textprompt:"What is your favorite food and why?"}
+		//add more prompts here as needed
+	];
+  
+  	//welcome page	
+  	 const welcome_trial = {
+  		type: jsPsychHtmlKeyboardResponse,
+  		stimulus: "Welcome. Press the any key to get started",
+  		post_trial_gap: 500
+  	}
+  	
+  	//instructions
+  	 const instructions_trial = {
+  		type: jsPsychHtmlKeyboardResponse,
+  		stimulus: `
+  			<div style='text-align:left;padding:20px'>
+	  		<p>In this task, we'll be gathering natural, conversational speech from you.</p>
+	  		<p>To get started, you will be see some icebreaker prompts on the screen. Please respond naturally into the microphone.</p>
+	  		<p>While speaking, you may hear some background noise in your headphones. This is completely normal—please continue speaking into the microphone as you usually would</p>
+  			<p>Press any key to continue</p>  		
+  			</div>
+  		`,
+  		choices: [' '],
+  		post_trial_gap: 500
+  	}
+  	
+  	//fixation cross
+  	const fixation_trial = {
+  		type: jsPsychHtmlKeyboardResponse,
+  		stimulus: `
+  			<h1>+</h1>
+  		`,
+  		choices: "NO_KEYS",
+  		trial_duration: 500  	
+  	}
+  	
+  	//experiment end
+  	const end_experiment = {
+  		type: jsPsychHtmlKeyboardResponse,
+  		stimulus: `
+  			<h2>Experiment Complete</h2>
+  		`,
+  		choices: "NO_KEYS",	
+  	}
+  	
+  	//combine trials into a timeline
+  	const textprompt_timeline = {
+  		timeline: [
+  			//textprompt
+  			{
+				type: jsPsychHtmlKeyboardResponse,
+				stimulus:()=> "<h2>" + jsPsych.evaluateTimelineVariable('textprompt') + "</h2>",
+				choices: "ALL_KEYS" //press any key to proceed
+  			},
+			//fixation cross
+			{
+				type: jsPsychHtmlKeyboardResponse,
+				stimulus: "<h2>+</h2>",
+				choices: "NO_KEYS",
+				trial_duration: 500  	
+			}
+  		],
+  		timeline_variables: trials,
+  		randomize_order: true, //randomize trial order
+  		repetitions: 1
+  	}
+  	
+
+	//sequence the experiment timeline
+  	let master_timeline = [];
+  	master_timeline.push(preload);
+  	master_timeline.push(welcome_trial);
+  	master_timeline.push(instructions_trial);
+  	master_timeline.push(startBackgroundAudio)
+  	master_timeline.push(textprompt_timeline);
+  	master_timeline.push(stopBackgroundAudio)
+  	master_timeline.push(end_experiment);
+  	
+	//start the experiment
+  	jsPsych.run(master_timeline);
+  </script>
+  
+
+</html>
