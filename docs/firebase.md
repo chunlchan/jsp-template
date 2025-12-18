@@ -3,38 +3,37 @@
 
 ## Create a new Firebase project
 
-<img src="media/firebase/create_firebase_prj.png" alt="Firebase create new project button" style="max-width:400px;"></img>
+![Firebase create new project button](media/firebase/create_firebase_prj.png ':class=elevated-img :size=400')
 
 - Enter a project name
 - Unselect the "Join the Google Developer Program" toggle
 
-<img src="media/firebase/prj_name.png" alt="Project name form" style="max-width:400px;"></img>
+![Project name form](media/firebase/prj_name.png ':class=elevated-img :size=400')
 
 ## Setup Realtime Database
 
 - From the Build section of left navigation menu, select "Realtime Database" -> "Create Database" and select "United States"as the location. 
 
-<img src="media/firebase/rtdb_1.png" alt="Realtime Database create button" style="max-width:600px;"></img>
-<img src="media/firebase/rtdb_2.png" alt="Realtime Database location drop down menu" style="max-width:600px;"></img>
+![Realtime Database create button](media/firebase/rtdb_1.png ':class=elevated-img :size=600')
+![Realtime Database create button](media/firebase/rtdb_2.png ':class=elevated-img :size=600')
 
 - Select "Start in Test Mode" for Security Rules (stronger rules are available in the template folders)
 
-<img src="media/firebase/rtdb_3.png" alt="Realtime Database security rules options" style="max-width:600px;"></img>
+![Realtime Database security rules options](media/firebase/rtdb_3.png ':class=elevated-img :size=600')
 
 ## Obtain Firebase Config Object
 
 - Click the gear icon next to "Project Overview" and select "Project Settings".
 
-<img src="media/firebase/gear_icon.png" alt="Gear icon button" style="max-width:400px;"></img>
+![Gear icon button](media/firebase/gear_icon.png ':class=elevated-img :size=400')
 
 - Select the web </> icon.
 
-<img src="media/firebase/web_icon.png" alt="Web icon button" style="max-width:400px;"></img>
-
+![Web icon button](media/firebase/web_icon.png ':class=elevated-img :size=400')
 
 - Enter a nickname for the web app, then click "Register app".
 
-<img src="media/firebase/register_app.png" alt="Web app registration form" style="max-width:400px;"></img>
+![Web app registration form](media/firebase/register_app.png ':class=elevated-img :size=400')
 
 You should no see your project specific Firebase config object that will look something like this:
 
@@ -63,7 +62,7 @@ cd /path/to/your/local/project/
 ```
 ?> Tip: You can drag and drop folders into your terminal window
 
-<img src="media/firebase/drag_drop.gif" alt="GIF showing drag-and-drop action" style="max-width:620px"/>
+![GIF showing drag-and-drop action](media/firebase/drag_drop.gif ':class=elevated-img :size=620')
 
 To set up the Firebase deployment pipeline 
 ```bash
@@ -86,8 +85,7 @@ firebase init
     - 'Set up automatic builds and deploys with GitHub?' prompt, enter 'N'
     - 'File //index.html already exists. Overwrite?', enter 'N'
 
-<img src="media/firebase/firebase_hosting_CLI.png" alt="Firebase Hosting Command Line Screenshot" style="max-width:620px"/>
-
+![Firebase Hosting Command Line Screenshot](media/firebase/firebase_hosting_CLI.png ':class=elevated-img :size=600')
 
 Finally, run the deploy command
 ```bash
