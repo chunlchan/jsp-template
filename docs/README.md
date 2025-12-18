@@ -10,7 +10,7 @@ The template currently available in this repository are:
 - [Background Noise Task](bg_noise.md)
 
 ## Overview
-Each template is a single standalone html file that can be run in a browser. In some cases, certain additional files may be required (such as audio files) which will be available in the same folder.
+Each template is a single standalone html file that can be run in a browser. In some cases, additional files may be required (such as audio files) which will be available in the same folder.
 
 ## Where to start?
 The [Flanker Task](flanker_task.md) is the simplest and a great starting point. Once you're comfortable with it, feel free to explore the other tasks
