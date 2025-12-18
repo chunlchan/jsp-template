@@ -1,5 +1,7 @@
-* [Home](/)
-* [Transcription Task](transcription_task.md)
-* [Forced Choice Task](forced_choice_task.md)
-* [Flanker Task](flanker_task.md)
-* [Background Noise Task](bg_noise.md)
+- [Home](/)
+- *Templates*
+    - [Flanker Task](flanker_task.md)
+    - [Forced Choice Task](forced_choice_task.md)
+    - [Transcription Task](transcription_task.md)
+    - [Background Noise Task](bg_noise.md)
+- [Firebase Setup](firebase.md)
