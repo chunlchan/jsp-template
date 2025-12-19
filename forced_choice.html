@@ -29,9 +29,9 @@
   	
   	//list of prompts to appear on screen
   	const trials = [
-		{stimulus: "N1-44100.mp3", correct_response:"F"},
-		{stimulus: "N2-44100.mp3", correct_response:"J"},
-		{stimulus: "N3-44100.wav", correct_response:"F"}
+		{stimulus: "N1-44100.mp3", correct_response:"YES"},
+		{stimulus: "N2-44100.mp3", correct_response:"YES"},
+		{stimulus: "N3-44100.wav", correct_response:"NO"}
 	];
 	
 	  const preload = {
@@ -56,7 +56,7 @@
   			<div style='text-align:left;padding:20px'>
 	  			<p>In this task, you'll hear speech from different talkers.</p>
 		  		<p>You will decide if you think this speaker's first language is English</p>
-  				<p>Press any key to continue</p>  		
+  				<p>Press 'Next' to continue</p>  		
   			</div>
   		`,
   		choices: ['Next'],
@@ -78,7 +78,9 @@
   		type: jsPsychHtmlKeyboardResponse,
   		stimulus: `
   			<h2>Experiment Complete</h2>
-  			<a href="https://www.google.com">Click here to submit & return to Prolific</a>
+  			<a href="https://www.google.com">
+			Click here to submit & return to Prolific
+			</a>
   		`,
   		choices: "NO_KEYS",	
   	}
