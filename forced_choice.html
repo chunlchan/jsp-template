@@ -14,18 +14,39 @@
   <body></body>
 
   <script type="module">
+	//***firebase setup**
+	import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js'
+	import { getDatabase, ref, push } from 'https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js'
+
+	// Replace with your app's Firebase configuration
+	const firebaseConfig = {
+		apiKey: "YOUR_API_KEY",
+		authDomain: "YOUR_AUTH_DOMAIN",
+		databaseURL: "YOUR_DATABASE_URL",
+		projectId: "YOUR_PROJECT_ID",
+		storageBucket: "YOUR_STORAGE_BUCKET",
+		messagingSenderId: "YOUR_SENDER_ID",
+		appId: "YOUR_APP_ID"
+	};
+
+
+	// Initialize Firebase
+	initializeApp(firebaseConfig);
+
+	//write data
+	function writeData(pid, data) {
+		try {
+			const db = getDatabase();
+			data.pid = pid;
+			push(ref(db, '/data/' + pid), data);
+		} catch (error) {
+			console.log("Unable to write to Firebase. Ensure firebaseConfig has been set up appropriately.", error)
+		}
+
+	}
+	
     //***jsPsych**
   	const jsPsych = initJsPsych();
-  	
-  	//participant's ID
-  	let pid = jsPsych.data.getURLVariable('pid');
-  	
-  	//write data
-    function writeData(pid, data){
-    	console.log(pid, data); 
-    	  //const db = getDatabase();
-		  //push(ref(db, '/' + pid), data);
-    }  	
   	
   	//list of prompts to appear on screen
   	const trials = [
@@ -97,6 +118,7 @@
 				prompt: "<h2>Is the speaker's first language is English?</h2>",
 				response_allowed_while_playing: false,
 				on_finish: (data) => {
+					console.log(pid, data)
 					writeData(pid, data)
 				}
 			},
