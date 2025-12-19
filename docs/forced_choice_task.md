@@ -11,7 +11,13 @@ The Forced Choice task presents a sound file, followed by two buttons. The parti
 
 ![Github download button](./media/forced_choice/audio_folder.png ':class=elevated-img :size=300')
 
-- Open the forced_choice.html file in your browser. The web experiment will start automatically.
+- Open the forced_choice.html file in your browser. 
+- In the browser address bar, append "?pid=test" to the URL, then press the enter key to reload the page.
+
+![Participant ID url parameter](./media/forced_choice/pid_url_param.png ':class=elevated-img :size=600')
+
+?> This passes a participant ID of "test" to the web experiment
+
 
 ## Anatomy of a jsPsych file
 - Visit the jsPsych anotamy [description here](flanker_task?id=anatomy-of-a-jspsych-file).
@@ -38,7 +44,71 @@ Each line in the *trials* array describes an individual trial where *stimulus* r
 {stimulus:"your_sound_file.wav", correct_response:"YES"}
 ```
 
+## Firebase Integration
+- Set up your Firebase project following these [instructions](firebase.md) amd take note of your project specific Firebase object.
+- In the *forced_choice.html* file, locate the *firebaseConfig* object and replace it with your Firebase project's configuration.
+
+```js
+const firebaseConfig = {
+    //replce these with your the configuration from your Firebase project 
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    databaseURL: "YOUR_DATABASE_URL",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+};
+```
+
+- Your web experiment will now be connected to Firebase and responses from participants will be saved to Firebase's Realtime Database.
+
+## Firebase Secure Rules
+- From the Firebase web console, select "Realtime Database" -> "Rules"
+
+![Firebase Realtime Database rules panel](./media/forced_choice/rtdb_rules.png ':class=elevated-img :size=400')
+
+- Replace the current rules with the ones below.
+
+```js
+{
+    "rules": {
+        ".read": false,
+        ".write": false,
+        "data": {
+            "$pid": {
+                "$pushKey": {
+                    ".read": false,
+                    ".write": true,
+                    ".validate": "$pid == newData.child('pid').val()"
+                }
+            }
+        }
+    }
+}
+```
+
 ## Prolific Integration
+- After completing the "Deployment to Firebase Hosting" steps, take note of your Firebase public URL (e.g. https://my-project.web.app).
+- Log into your Prolific account and initate a new study.
+- "Data Collection" -> "What's the URL of your study", enter your Firebase web app's public URL.
+
+![Prolific URL parameters screenshot](./media/forced_choice/prolific_study_url.png ':class=elevated-img :size=400')
+
+- "Recording Prolific IDs" -> Select "URL Parameters", then click "Edit".
+
+![Prolific URL parameters screenshot](./media/forced_choice/prolific_url_params.png ':class=elevated-img :size=600')
+
+- Under "PROLIFIC PID" enter "pid" (all lowercase). Click "Add Parameters".
+
+![Prolific URL parameters screenshot](./media/forced_choice/prolific_url_params_edit.png ':class=elevated-img :size=400')
+
+- The new set of URL parameters should now look like this:
+
+![Prolific URL parameters screenshot](./media/forced_choice/prolific_url_params_new.png ':class=elevated-img :size=600')
+
+
+
 - Set up your study on Prolific and obtain the completion URL.
 - Insert the completion URL in the *end_experiment* object.
 
@@ -55,5 +125,3 @@ const end_experiment = {
 }
 ```
 - Clicking on the link at the end of the experiment will direct participants back to the Prolific completion URL.
-
-## Firebase Integration

@@ -50,7 +50,7 @@ const firebaseConfig = {
 ```
 This block of code will need to be added to your web experiment template. Instructions for this are available in the web template specific pages.
 
-## Deployment
+## Deployment to Firebase Hosting
 Download and install the following:
 - [Node and NPM](https://nodejs.org/en)
 - [Firebase CLI](https://firebase.google.com/docs/cli/)

@@ -16,4 +16,4 @@ Each template is a single standalone html file that can be run in a browser. In 
 The [Flanker Task](flanker_task.md) is the simplest and a great starting point. Once you're comfortable with it, feel free to explore the other tasks
 
 ## Where to next?
-You'll eventually need a live website and database to host your web experiment. The quickest way to get this upand running is to sign up for a [Firebase](https://firebase.google.com) account. Firebase setup instructions are [available here](firebase.md)
+You'll eventually need a live website and database to host your web experiment. The quickest way to get this upand running is to sign up for a [Firebase](https://firebase.google.com) account. Firebase setup instructions are [available here](firebase.md).

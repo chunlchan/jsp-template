@@ -57,3 +57,10 @@ const end_experiment = {
 - Clicking on the link at the end of the experiment will direct participants back to the Prolific completion URL.
 
 ## Firebase Integration
+- See Firebase Intergration section of the [Forced Choice task documentation](./forced_choice_task.md)
+
+## Firebase Secure Rules
+- See Firebase Secure rules section of the [Forced Choice task documentation](./forced_choice_task.md)
+
+## Prolific Integration Secure Rules
+- See Prolific Integration rules section of the [Forced Choice task documentation](./forced_choice_task.md)
