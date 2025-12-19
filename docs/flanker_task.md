@@ -7,8 +7,8 @@ The Flanker Task measures attention and cognitive control. Participants respond 
 
 
 ## Quick Start
-- Download the flanker_demo.html file from the [Github repo](https://github.com/chunlchan/jsp-template/blob/main/flanker_demo.html).
-- Open the HTML file in your browser, and the web experiment will start automatically. You can then explore and test it on your own.
+- Download the [flanker_demo.html file](https://github.com/chunlchan/jsp-template/blob/main/flanker_demo.html) from the repository.
+- Open the HTML file in your browser. The web experiment will start automatically.
 
 ![Github download button](./media/flanker/github_download.png ':class=elevated-img :size=300')
 
