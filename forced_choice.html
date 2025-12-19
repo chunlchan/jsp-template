@@ -48,6 +48,9 @@
     //***jsPsych**
   	const jsPsych = initJsPsych();
   	
+  	//participant's ID
+  	let pid = jsPsych.data.getURLVariable('pid');
+  	
   	//list of prompts to appear on screen
   	const trials = [
 		{stimulus: "N1-44100.mp3", correct_response:"YES"},
