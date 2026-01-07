@@ -118,7 +118,7 @@
 				type: jsPsychAudioButtonResponse,
 				stimulus: () => 'audio/' + jsPsych.evaluateTimelineVariable('stimulus'),
 				choices: ["YES", "NO"],
-				prompt: "<h2>Is the speaker's first language is English?</h2>",
+				prompt: "<h2>Is the speaker's first language English?</h2>",
 				response_allowed_while_playing: false,
 				on_finish: (data) => {
 					console.log(pid, data)
