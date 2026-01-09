@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Forced Choice Demo</title>
-    <script src="https://unpkg.com/jspsych@8.2.2"></script>
-    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.3"></script>
-    <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.1.0"></script>
-    <script src="https://unpkg.com/@jspsych/plugin-survey-text@1.1.3"></script>
+
+<head>
+	<title>Forced Choice Demo</title>
+	<script src="https://unpkg.com/jspsych@8.2.2"></script>
+	<script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.3"></script>
+	<script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.1.0"></script>
+	<script src="https://unpkg.com/@jspsych/plugin-survey-text@1.1.3"></script>
 	<script src="https://unpkg.com/@jspsych/plugin-audio-button-response@2.1.0"></script>
 	<script src="https://unpkg.com/@jspsych/plugin-preload@2.1.0"></script>
-    <link href="https://unpkg.com/jspsych@8.2.2/css/jspsych.css" rel="stylesheet" type="text/css"/>
-  </head>
+	<script src="https://unpkg.com/papaparse@5.5.3/papaparse.min.js"></script>
+	<link href="https://unpkg.com/jspsych@8.2.2/css/jspsych.css" rel="stylesheet" type="text/css" />
+</head>
 
-  <body></body>
+<body></body>
 
-  <script type="module">
+<script type="module">
 	//***firebase setup**
 	import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js'
 	import { getDatabase, ref, push } from 'https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js'
@@ -44,112 +46,152 @@
 		}
 
 	}
-	
-    //***jsPsych**
-  	const jsPsych = initJsPsych();
-  	
-  	//participant's ID
-  	let pid = jsPsych.data.getURLVariable('pid');
-  	
-  	//list of prompts to appear on screen
-  	const trials = [
-		{stimulus: "N1-44100.mp3", correct_response:"YES"},
-		{stimulus: "N2-44100.mp3", correct_response:"YES"},
-		{stimulus: "N3-44100.wav", correct_response:"NO"}
-	];
-	
-	  const preload = {
-	    type: jsPsychPreload,
-    	audio: ()=>trials.map((item)=>"audio/" + item.stimulus),
-    	show_progress_bar: true,
-    	show_detailed_errors: true
+
+	//***jsPsych**
+	const jsPsych = initJsPsych();
+
+	//participant's ID
+	let pid = jsPsych.data.getURLVariable('pid');
+
+	//items presented to the participant
+	let trials;
+	function loadTrials() {
+		let prm = new Promise((resolve, reject) => {
+			const listFile = jsPsych.data.getURLVariable('list');
+			if (listFile === null || listFile === undefined || listFile === "") {
+				alert("missing list URL parameter");
+				reject();
+			}
+			let listData = Papa.parse("/lists/" + listFile, {
+				download: true,
+				header: true,
+				skipEmptyLines: true,
+				complete: (res) => {
+					//console.log(res)
+					if (res.data == null || res.data.length == 0) {
+						alert("Unable to load list");
+						reject();
+					}
+					trials = res.data;
+					resolve();
+				},
+				error: (err) => {
+					alert("Error:" + err);
+					reject();
+				}
+			})
+		});
+		return prm;
 	}
-  
-  	//welcome page	
-  	 const welcome_trial = {
-  		type: jsPsychHtmlButtonResponse,
-  		stimulus: "Welcome to the experiment",
-  		choices: ['Next'],
-  		post_trial_gap: 500
-  	}
-  	
-  	//instructions
-  	 const instructions_trial = {
-  		type: jsPsychHtmlButtonResponse,
-  		stimulus: `
+
+	const preload = {
+		type: jsPsychPreload,
+		audio: () => trials.map((item) => "audio/" + item.stimulus),
+		show_progress_bar: true,
+		show_detailed_errors: true
+	}
+
+	//welcome page	
+	const welcome_trial = {
+		type: jsPsychHtmlButtonResponse,
+		stimulus: "Welcome to the experiment",
+		choices: ['Next'],
+		post_trial_gap: 500
+	}
+
+	//instructions
+	const instructions_trial = {
+		type: jsPsychHtmlButtonResponse,
+		stimulus: `
   			<div style='text-align:left;padding:20px'>
 	  			<p>In this task, you'll hear speech from different talkers.</p>
 		  		<p>You will decide if you think this speaker's first language is English</p>
   				<p>Press 'Next' to continue</p>  		
   			</div>
   		`,
-  		choices: ['Next'],
-  		post_trial_gap: 500
-  	}
-  	
-  	//fixation cross
-  	const fixation_trial = {
-  		type: jsPsychHtmlKeyboardResponse,
-  		stimulus: `
+		choices: ['Next'],
+		post_trial_gap: 500
+	}
+
+	//fixation cross
+	const fixation_trial = {
+		type: jsPsychHtmlKeyboardResponse,
+		stimulus: `
   			<h1>+</h1>
   		`,
-  		choices: "NO_KEYS",
-  		trial_duration: 500  	
-  	}
-  	
-  	//experiment end
-  	const end_experiment = {
-  		type: jsPsychHtmlKeyboardResponse,
-  		stimulus: `
+		choices: "NO_KEYS",
+		trial_duration: 500
+	}
+
+	//experiment end
+	const end_experiment = {
+		type: jsPsychHtmlKeyboardResponse,
+		stimulus: `
   			<h2>Experiment Complete</h2>
   			<a href="https://www.google.com">
 			Click here to submit & return to Prolific
 			</a>
   		`,
-  		choices: "NO_KEYS",	
-  	}
-  	
-  	//combine trials into a timeline
-  	const trials_timeline = {
-  		timeline: [
-  			//audio
-  			
-			{
-				type: jsPsychAudioButtonResponse,
-				stimulus: () => 'audio/' + jsPsych.evaluateTimelineVariable('stimulus'),
-				choices: ["YES", "NO"],
-				prompt: "<h2>Is the speaker's first language English?</h2>",
-				response_allowed_while_playing: false,
-				on_finish: (data) => {
-					console.log(pid, data)
-					writeData(pid, data)
-				}
-			},
-			//fixation cross
-			{
-				type: jsPsychHtmlKeyboardResponse,
-				stimulus: "<h2>+</h2>",
-				choices: "NO_KEYS",
-				trial_duration: 500  	
-			}
-  		],
-  		timeline_variables: trials,
-  		randomize_order: true, //randomize trial order
-  		repetitions: 1
-  	}
-  	
+		choices: "NO_KEYS",
+	}
 
-	//sequence the experiment timeline
-  	let master_timeline = [];
-  	master_timeline.push(preload);
-  	master_timeline.push(welcome_trial);
-  	master_timeline.push(instructions_trial);
-  	master_timeline.push(trials_timeline);
-  	master_timeline.push(end_experiment);
-  	
+	//combine trials into a timeline
+	let trials_timeline;
+	function buildTrialsTimeline() {
+		trials_timeline = {
+			timeline: [
+				//audio
+
+				{
+					type: jsPsychAudioButtonResponse,
+					stimulus: () => 'audio/' + jsPsych.evaluateTimelineVariable('stimulus'),
+					choices: ["YES", "NO"],
+					prompt: "<h2>Is the speaker's first language English?</h2>",
+					response_allowed_while_playing: false,
+					on_finish: (data) => {
+						console.log(pid, data)
+						writeData(pid, data)
+					}
+				},
+				//fixation cross
+				{
+					type: jsPsychHtmlKeyboardResponse,
+					stimulus: "<h2>+</h2>",
+					choices: "NO_KEYS",
+					trial_duration: 500
+				}
+			],
+			timeline_variables: trials,
+			randomize_order: true, //randomize trial order
+			repetitions: 1
+		}
+	}
+
+
+
 	//start the experiment
-  	jsPsych.run(master_timeline);
-  </script>
-  
+	async function startExperiment() {
+		try {
+			await loadTrials();
+			console.log(trials);
+			buildTrialsTimeline();
+			console.log(trials_timeline);
+		} catch (error) {
+			return;
+		}
+
+		//sequence the experiment timeline
+		let master_timeline = [];
+		master_timeline.push(preload);
+		master_timeline.push(welcome_trial);
+		master_timeline.push(instructions_trial);
+		master_timeline.push(trials_timeline);
+		master_timeline.push(end_experiment);
+		jsPsych.run(master_timeline);
+	}
+	startExperiment();
+
+</script>
+
 
 </html>

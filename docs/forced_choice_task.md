@@ -2,21 +2,51 @@
 
 The Forced Choice task presents a sound file, followed by two buttons. The participant must select one of the buttons before advancing to the next trial.
 
+This template pulls stimuli from external text files, allowing you to create different conditions that can be set through via the `list` URL parameter. Combined with the Taskflow feature in Prolific, it is possible to recruit and distribute participants evenly across the various multiple conditions of your study design.
+
 ## Quick Start
 - Clone or download a ZIP of the [respository](https://github.com/chunlchan/jsp-template).
 
 ![Github download button](./media/forced_choice/github_download.png ':class=elevated-img :size=300')
 
-- Ensure that the "audio" folder and forced_choice.html file are in the same directory.
+- Ensure that the "audio" folder, "lists" folder and forced_choice.html file are in the same directory.
 
-![Github download button](./media/forced_choice/audio_folder.png ':class=elevated-img :size=300')
+![Github download button](./media/forced_choice/audio_lists_folder.png ':class=elevated-img :size=300')
 
-- Open the forced_choice.html file in your browser. 
-- In the browser address bar, append "?pid=test" to the URL, then press the enter key to reload the page.
 
-![Participant ID url parameter](./media/forced_choice/pid_url_param.png ':class=elevated-img :size=600')
+- The lists folder contains two files, list1.txt and list2.txt.
+- Each file represents a set of possible stimuli to be presented to participant and should contain a tab separated table with the headers "stimuli" and "correct_response"
 
-?> This passes a participant ID of "test" to the web experiment
+| stimuli | correct_response |
+| -- | -- |
+| N1-44100.mp3 | YES |
+| N2-44100.mp3 | NO |
+...
+
+From a terminal or shell window, "cd" (which stands for change directory) to the root path of your project
+
+```bash
+cd /path/to/your/local/project/
+```
+?> Tip: You can drag and drop folders into your terminal window
+
+![GIF showing drag-and-drop action](media/firebase/drag_drop.gif ':class=elevated-img :size=620')
+
+- Next, in the terminal or command prompt enter the following Python command:
+
+```python
+python -m http.server
+```
+
+?> Visit https://www.python.org/downloads/ to download and install Python on your system.
+
+?> In some cases you may need to replace `python` with `python3`.
+
+- Launch a browser and visit http://localhost:8000/forced_choice.html?pid=test&list=list1.txt
+
+![Participant ID url parameter](./media/forced_choice/pid_list_url_param.png ':class=elevated-img :size=600')
+
+?> This passes a participant ID of "test" to the web experiment and will present the stimuli listed in the "list1.txt" file.
 
 
 ## Anatomy of a jsPsych file
@@ -24,25 +54,11 @@ The Forced Choice task presents a sound file, followed by two buttons. The parti
 
 ## Modifying the Forced Choice Task
 
-To add more trials, locate the *trials* array and append additional lines to the end. Any new audio files referenced in the array should also added to the "audio" folder. Both wav and mp3 sound files are supported.
+To add more trials to an existing list, simply edit the apprpriate text file (e.g. list1.txt) and add more lines to the existing tab-separated table structure.
 
-```js
-const trials = [
-    {stimulus: "N1-44100.mp3", correct_response:"YES"},
-    {stimulus: "N2-44100.mp3", correct_response:"YES"},
-    {stimulus: "N3-44100.wav", correct_response:"NO"}, //don't forget to add commas between lines
+To add more lists, duplicate the public/list2.txt and rename to list3.txt. Replace the content of list3.txt with the appropriate stimuli following the same table structure.
 
-    //add new lines here
-    {stimulus: "mynewsound.wav", correct_response:"YES"},
-    {stimulus: "anothersound.wav", correct_response:"YES"}
-];
-```
-
-Each line in the *trials* array describes an individual trial where *stimulus* refers to the sound file that will be presented to the participant and *correct_response* is the expected correct response from the participant.
-
-```js
-{stimulus:"your_sound_file.wav", correct_response:"YES"}
-```
+As a reminder, any additional lists added are pulled into the web expreiment via the `list` URL parameter.
 
 ## Firebase Integration
 - Set up your Firebase project following these [instructions](firebase.md) amd take note of your project specific Firebase object.
@@ -125,3 +141,26 @@ const end_experiment = {
 }
 ```
 - Clicking on the link at the end of the experiment will direct participants back to the Prolific completion URL.
+
+
+## Taskflow Setup on Prolific
+Prolific has a new feature called [Taskflow](https://researcher-help.prolific.com/en/articles/445142-taskflow-academic-multiple-conditions) that will evenly distribute participants across multiple URLs in a single study.
+
+- Create a file named *urls.csv*
+- Add URLs pointing to the appropriate lists of your study to *urls.csv* (one URL per line). This may look something like the following:
+    - https://my-project.web.app/?list=list1.txt
+    - https://my-project.web.app/?list=list2.txt
+    - https://my-project.web.app/?list=list3.txt
+    - etc...
+
+- Log in to Prolific, create a new study or select an existing study.
+- Under "How do you want to collect your data?", select "Taskflow"<br/>
+![taskflow](./media/forced_choice/taskflow.png ':class=elevated-img :size=300')
+- Upload urls.csv to Prolific <br/>
+![taskflow section](./media/forced_choice/taskflow_upload1.png  ':class=elevated-img :size=400')
+![taskflow upload](./media/forced_choice/taskflow_upload2.png  ':class=elevated-img :size=400')
+
+- Enter the total number of participants and the distribution across each unique URL. <br/>
+![task flow distribution](./media/forced_choice/taskflow_distribution.png  ':class=elevated-img :size=500')
+
+- Click "Save as Draft" on the study page to save changes.
